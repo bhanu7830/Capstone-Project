@@ -1,0 +1,43 @@
+﻿# Environment variables
+.env
+.env.local
+.env.*.local
+*.env
+
+# Large model files
+*.pt
+*.pth
+
+merged_dataset/
+FoodData_Central_foundation_food_csv_*/
+
+# Build outputs
+dist/
+build/
+*.egg-info/
+__pycache__/
+.pytest_cache/
+
+# Node modules
+node_modules/
+frontend/node_modules/
+
+# Uploads and training data
+foodscan/backend/app/storage/uploads/
+foodscan/backend/app/storage/crops/
+foodscan/backend/app/storage/dataset/train/
+foodscan/backend/app/storage/dataset/test/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Database
+*.db
+*.sqlite
