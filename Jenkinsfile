@@ -1,4 +1,3 @@
-
 pipeline {
     agent any
 
@@ -11,7 +10,7 @@ pipeline {
             }
         }
 
-        stage('Frontend Install') {
+        stage('Install Dependencies') {
             steps {
                 echo 'Installing frontend dependencies...'
                 dir('frontend') {
@@ -20,21 +19,37 @@ pipeline {
             }
         }
 
-        stage('Frontend Build') {
+        stage('Build') {
             steps {
-                echo 'Building React frontend...'
+                echo 'Building frontend application...'
                 dir('frontend') {
                     bat 'npm run build'
                 }
             }
         }
 
-        stage('Python Check') {
+        stage('Test') {
             steps {
-                echo 'Checking Python files...'
-                bat 'python --version'
-                bat 'python -m py_compile nutrition_engine.py'
-                bat 'python -m py_compile combine.py'
+                echo 'Running tests...'
+                dir('frontend') {
+                    bat 'npm test -- --watchAll=false'
+                }
+            }
+        }
+
+        stage('Security Scan') {
+            steps {
+                echo 'Running basic security checks...'
+                dir('frontend') {
+                    bat 'npm audit --audit-level=high'
+                }
+            }
+        }
+
+        stage('Docker Build') {
+            steps {
+                echo 'Building Docker image...'
+                bat 'docker build -t bitewise:latest .'
             }
         }
     }
@@ -42,16 +57,15 @@ pipeline {
     post {
         success {
             echo '======================================'
-            echo 'BiteWise CI Pipeline PASSED'
+            echo 'BiteWise CI/CD PIPELINE PASSED'
             echo '======================================'
         }
 
         failure {
             echo '======================================'
-            echo 'BiteWise CI Pipeline FAILED'
+            echo 'BiteWise PIPELINE FAILED'
             echo 'Check the Console Output'
             echo '======================================'
         }
     }
 }
-
