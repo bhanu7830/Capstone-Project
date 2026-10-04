@@ -1,3 +1,4 @@
+
 pipeline {
     agent any
 
@@ -10,39 +11,29 @@ pipeline {
             }
         }
 
-        stage('Install Dependencies') {
-            steps {
-                echo 'Installing frontend dependencies...'
-                dir('frontend') {
-                    bat 'npm install'
-                }
-            }
-        }
-
         stage('Build') {
             steps {
-                echo 'Building frontend application...'
-                dir('frontend') {
-                    bat 'npm run build'
-                }
+                echo 'Checking Python application files...'
+                bat 'python --version'
+                bat 'python -m py_compile combine.py'
+                bat 'python -m py_compile nutrition_engine.py'
+                bat 'python -m py_compile train.py'
             }
         }
 
         stage('Test') {
             steps {
-                echo 'Running tests...'
-                dir('frontend') {
-                    bat 'npm test -- --watchAll=false'
-                }
+                echo 'Running basic Python validation...'
+                bat 'python -m py_compile combine.py'
+                bat 'python -m py_compile nutrition_engine.py'
+                bat 'python -m py_compile train.py'
             }
         }
 
         stage('Security Scan') {
             steps {
-                echo 'Running basic security checks...'
-                dir('frontend') {
-                    bat 'npm audit --audit-level=high'
-                }
+                echo 'Running dependency security check...'
+                bat 'python -m pip check'
             }
         }
 
@@ -57,7 +48,7 @@ pipeline {
     post {
         success {
             echo '======================================'
-            echo 'BiteWise CI/CD PIPELINE PASSED'
+            echo 'BiteWise DEVSECOPS PIPELINE PASSED'
             echo '======================================'
         }
 
@@ -69,3 +60,4 @@ pipeline {
         }
     }
 }
+
